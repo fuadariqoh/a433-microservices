@@ -1,0 +1,28 @@
+# Menentukan Versi docker compose
+version: "3"
+# Defining service yang akan dibuat oleh docker compose
+services:
+  #  Ini service untuk app
+  item-app:
+    # Mengambil image dari dockerhub  saya di remote origin.
+    image: fuadariqoh/item-app:v1
+    # Open port 80(host) : 8080 (container port)
+    ports:
+      - "80:8080"
+    # membuat service item-app bergantung pada service item-db
+    depends_on:
+      - item-db
+    # ini untuk restart policy
+    restart: always
+  # ini service untuk database mongo
+  item-db:
+    # menarik image dri mongo dengan versi 3
+    image: mongo:3
+    # attach docker volume
+    volumes:
+      - app-db:/data/db
+    # ini untuk restart policy
+    restart: always
+# initiate volume
+volumes:
+  app-db:
