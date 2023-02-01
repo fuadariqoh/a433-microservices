@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karsajobs-fe
+  labels:
+    app: microservices
+    tier: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: app
+  template:
+    metadata:
+      labels:
+        app: microservices
+        tier: app
+    spec:
+      containers:
+        - name: frontend
+          image: fuadariqoh/karsajobs-ui:latest
+          ports:
+            - containerPort: 8000

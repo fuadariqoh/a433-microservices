@@ -1,0 +1,47 @@
+apiVersion: "apps/v1"
+kind: "StatefulSet"
+metadata:
+  name: "mongo"
+spec:
+  serviceName: "mongo"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "mongo"
+  template:
+    metadata:
+      labels:
+        app: "mongo"
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: "mongo"
+          image: "mongo"
+          imagePullPolicy: "Always"
+          command:
+            - mongod
+            - "--replSet"
+            - rs0
+            - "--smallfiles"
+            - "--noprealloc"
+            - "--bind_ip"
+            - "0.0.0.0"
+          env:
+            - name: "MONGO_INITDB_ROOT_USERNAME"
+              value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+
+            - name: "MONGO_INITDB_ROOT_PASSWORD"
+              value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+
+          ports:
+            - containerPort: 27017
+              name: "mongo"
+
+          volumeMounts:
+            - name: "mongodb-persistent-storage"
+              mountPath: "/data/db"
+
+      volumes:
+        - name: "mongodb-persistent-storage"
+          persistentVolumeClaim:
+            claimName: "mongo-pv-claim-new"
